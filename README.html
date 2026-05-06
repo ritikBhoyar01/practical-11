@@ -1,0 +1,119 @@
+# practical-11
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5 APIs Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        #dragBox, #dropBox {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #555;
+            display: inline-block;
+            text-align: center;
+            line-height: 150px;
+            margin-right: 20px;
+        }
+        #dragBox {
+            background-color: lightblue;
+            cursor: grab;
+        }
+        #dropBox {
+            background-color: lightgray;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>HTML5 APIs Demo</h1>
+
+    <!-- Drag and Drop -->
+    <section>
+        <h2>Drag & Drop API</h2>
+        <div id="dragBox" draggable="true">Drag me</div>
+        <div id="dropBox">Drop here</div>
+    </section>
+
+    <!-- Geolocation -->
+    <section>
+        <h2>Geolocation API</h2>
+        <button onclick="getLocation()">Get My Location</button>
+        <p id="locationOutput"></p>
+    </section>
+
+    <!-- Web Storage -->
+    <section>
+        <h2>Web Storage API (localStorage)</h2>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="saveName()">Save</button>
+        <button onclick="loadName()">Load</button>
+        <p id="storageOutput"></p>
+    </section>
+
+    <script>
+        // Drag & Drop API
+        const dragBox = document.getElementById("dragBox");
+        const dropBox = document.getElementById("dropBox");
+
+        dragBox.addEventListener("dragstart", function (e) {
+            e.dataTransfer.setData("text", e.target.id);
+        });
+
+        dropBox.addEventListener("dragover", function (e) {
+            e.preventDefault(); // Allow drop
+        });
+
+        dropBox.addEventListener("drop", function (e) {
+            e.preventDefault();
+            const data = e.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(data);
+            dropBox.appendChild(draggedElement);
+            draggedElement.textContent = "Dropped!";
+        });
+
+        // Geolocation API
+        function getLocation() {
+            const output = document.getElementById("locationOutput");
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        output.innerHTML =
+                            "Latitude: " + position.coords.latitude +
+                            "<br>Longitude: " + position.coords.longitude;
+                    },
+                    function (error) {
+                        output.innerHTML = "Error: " + error.message;
+                    }
+                );
+            } else {
+                output.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        // Web Storage API
+        function saveName() {
+            const name = document.getElementById("nameInput").value;
+            localStorage.setItem("username", name);
+            alert("Name saved!");
+        }
+
+        function loadName() {
+            const name = localStorage.getItem("username");
+            document.getElementById("storageOutput").textContent =
+                name ? "Stored Name: " + name : "No name found.";
+        }
+    </script>
+
+</body>
+</html>
